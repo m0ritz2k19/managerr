@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      try {
+        const hasOwn = Object.prototype.hasOwnProperty;
+        const isHex = (x) => typeof x === 'string' && /^#[0-9a-fA-F]{6}$/.test(x);
+        const PRESETS = {
+          seafoam_jade: { h: '#0f332e', he: '#15443e', hb: '#246b62', a: '#2dd4bf', afg: '#062420', ls: '#99f6e4', p: '#0f766e', ph: '#115e59', pb: '#14b8a6', sb: '#1b2222', sbb: '#101515', sba: '#243130', hd: '#1a2121', tb: '#1e2626', fb: '#171e1e', pg: '#141a1a', cb: '#1f2828', cbb: '#334242', mb: '#1d2626', ib: '#222c2c' },
+          royal_amethyst: { h: '#291742', he: '#382059', hb: '#573487', a: '#c084fc', afg: '#061816', ls: '#e9d5ff', p: '#7e22ce', ph: '#6b21a8', pb: '#a855f7', sb: '#1d1925', sbb: '#110e17', sba: '#292238', hd: '#1b1723', tb: '#201b2a', fb: '#181420', pg: '#15121c', cb: '#231e2e', cbb: '#3a324d', mb: '#211c2b', ib: '#272133' },
+          cyber_chartreuse: { h: '#232e11', he: '#2f3e17', hb: '#4c6326', a: '#a3e635', afg: '#061816', ls: '#d9f99d', p: '#4d7c0f', ph: '#3f6212', pb: '#65a30d', sb: '#1c2018', sbb: '#10130e', sba: '#262d20', hd: '#1a1e16', tb: '#1f241a', fb: '#171b14', pg: '#141711', cb: '#22271d', cbb: '#37402f', mb: '#20251b', ib: '#252b20' },
+          brushed_copper: { h: '#3b1f18', he: '#4d2920', hb: '#733f32', a: '#f69373', afg: '#061816', ls: '#fed7aa', p: '#b84a27', ph: '#9a3d1f', pb: '#e06d44', sb: '#221c1a', sbb: '#14100f', sba: '#302522', hd: '#1f1918', tb: '#251e1c', fb: '#1c1615', pg: '#181312', cb: '#28211f', cbb: '#433633', mb: '#261f1d', ib: '#2d2422' },
+          nordic_periwinkle: { h: '#172340', he: '#1f3057', hb: '#344f8c', a: '#93a8fe', afg: '#061816', ls: '#c7d2fe', p: '#4338ca', ph: '#3730a3', pb: '#6366f1', sb: '#1a1e29', sbb: '#0f1219', sba: '#242a3b', hd: '#181c26', tb: '#1d222e', fb: '#151923', pg: '#13161f', cb: '#202534', cbb: '#343d54', mb: '#1e2331', ib: '#242a3b' }
+        };
+        const s = localStorage.getItem('color-scheme');
+        const metaCs = document.querySelector('meta[name="color-scheme"]');
+        if (metaCs) metaCs.content = (s === 'light' || s === 'dark') ? s : 'light dark';
+        const v = localStorage.getItem('managerr-theme-variant');
+        if (v === 'oled') document.documentElement.dataset.themeVariant = 'oled';
+        const rawCs = localStorage.getItem('managerr-color-scheme') || 'seafoam_jade';
+        const cs = (rawCs === 'custom' || hasOwn.call(PRESETS, rawCs)) ? rawCs : 'seafoam_jade';
+        document.documentElement.dataset.colorScheme = cs;
+        let t = hasOwn.call(PRESETS, cs) ? Object.assign({}, PRESETS[cs]) : null;
+        if (cs === 'custom') {
+          try {
+            const raw = localStorage.getItem('managerr-custom-theme');
+            if (raw && raw.length <= 16384) {
+              const p = JSON.parse(raw);
+              const tok = (p && typeof p === 'object' && p.tokens && typeof p.tokens === 'object') ? p.tokens : p;
+              if (tok && typeof tok === 'object') {
+                t = Object.assign({}, PRESETS.seafoam_jade, {
+                  h: isHex(tok.headerBg) ? tok.headerBg : PRESETS.seafoam_jade.h,
+                  he: isHex(tok.headerBgEnd) ? tok.headerBgEnd : PRESETS.seafoam_jade.he,
+                  hb: isHex(tok.headerBorder) ? tok.headerBorder : PRESETS.seafoam_jade.hb,
+                  a: isHex(tok.accent) ? tok.accent : PRESETS.seafoam_jade.a,
+                  ls: isHex(tok.logoSecondary) ? tok.logoSecondary : PRESETS.seafoam_jade.ls,
+                  p: isHex(tok.primary) ? tok.primary : PRESETS.seafoam_jade.p,
+                  ph: isHex(tok.primaryHover) ? tok.primaryHover : PRESETS.seafoam_jade.ph,
+                  pb: isHex(tok.primaryBorder) ? tok.primaryBorder : PRESETS.seafoam_jade.pb,
+                  sb: isHex(tok.sidebarBg) ? tok.sidebarBg : PRESETS.seafoam_jade.sb,
+                  sbb: isHex(tok.sidebarBorder) ? tok.sidebarBorder : PRESETS.seafoam_jade.sbb,
+                  sba: isHex(tok.sidebarActiveBg) ? tok.sidebarActiveBg : PRESETS.seafoam_jade.sba,
+                  hd: isHex(tok.headingBg) ? tok.headingBg : PRESETS.seafoam_jade.hd,
+                  tb: isHex(tok.toolbarBg) ? tok.toolbarBg : PRESETS.seafoam_jade.tb,
+                  fb: isHex(tok.filterBarBg) ? tok.filterBarBg : PRESETS.seafoam_jade.fb,
+                  pg: isHex(tok.pageBg) ? tok.pageBg : PRESETS.seafoam_jade.pg,
+                  cb: isHex(tok.cardBg) ? tok.cardBg : PRESETS.seafoam_jade.cb,
+                  cbb: isHex(tok.cardBorder) ? tok.cardBorder : PRESETS.seafoam_jade.cbb,
+                  mb: isHex(tok.modalBg) ? tok.modalBg : PRESETS.seafoam_jade.mb,
+                  ib: isHex(tok.inputBg) ? tok.inputBg : PRESETS.seafoam_jade.ib
+                });
+              }
+            }
+          } catch {}
+        }
+        if (!t) t = Object.assign({}, PRESETS.seafoam_jade);
+        const customAcc = localStorage.getItem('managerr-accent');
+        if (isHex(customAcc)) t.a = customAcc;
+        const root = document.documentElement.style;
+        if (isHex(t.a)) root.setProperty('--arr-accent', t.a);
+        if (isHex(t.afg)) root.setProperty('--arr-accent-fg', t.afg);
+        if (isHex(t.ls)) root.setProperty('--arr-logo-secondary', t.ls);
+        if (isHex(t.p)) root.setProperty('--arr-primary', t.p);
+        if (isHex(t.ph)) root.setProperty('--arr-primary-hover', t.ph);
+        if (isHex(t.pb)) root.setProperty('--arr-primary-border', t.pb);
+        if (isHex(t.h)) root.setProperty('--arr-header-bg-dark', t.h);
+        if (isHex(t.he)) root.setProperty('--arr-header-bg-end-dark', t.he);
+        if (isHex(t.hb)) root.setProperty('--arr-header-border-dark', t.hb);
+        if (v !== 'oled') {
+          if (isHex(t.sb)) root.setProperty('--arr-sidebar-bg-dark', t.sb);
+          if (isHex(t.sbb)) root.setProperty('--arr-sidebar-border-dark', t.sbb);
+          if (isHex(t.sba)) root.setProperty('--arr-sidebar-active-bg-dark', t.sba);
+          if (isHex(t.hd)) root.setProperty('--arr-heading-bg-dark', t.hd);
+          if (isHex(t.tb)) root.setProperty('--arr-toolbar-bg-dark', t.tb);
+          if (isHex(t.fb)) root.setProperty('--arr-filterbar-bg-dark', t.fb);
+          if (isHex(t.pg)) root.setProperty('--arr-page-bg-dark', t.pg);
+          if (isHex(t.cb)) root.setProperty('--arr-card-bg-dark', t.cb);
+          if (isHex(t.cbb)) root.setProperty('--arr-card-border-dark', t.cbb);
+          if (isHex(t.mb)) root.setProperty('--arr-modal-bg-dark', t.mb);
+          if (isHex(t.ib)) root.setProperty('--arr-input-bg-dark', t.ib);
+        }
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme && isHex(t.h)) metaTheme.content = v === 'oled' ? '#000000' : t.h;
+      } catch {}
+    </script>
+    <meta name="theme-color" content="#0f332e" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1' y='1' width='30' height='30' rx='5' fill='%231b1b1b' stroke='%23393f45' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='10.5' fill='none' stroke='%232dd4bf' stroke-width='2.2' stroke-dasharray='46 18'/%3E%3Ccircle cx='16' cy='16' r='6.5' fill='none' stroke='%2399f6e4' stroke-width='2' stroke-dasharray='28 12'/%3E%3Cpolygon points='14,12.2 20.5,16 14,19.8' fill='%232dd4bf'/%3E%3C/svg%3E"
+    />
+    <title>Managerr</title>
+  </head>
+  <body class="bg-arr-page text-arr-text antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

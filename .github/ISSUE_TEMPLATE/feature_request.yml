@@ -1,0 +1,17 @@
+name: Feature Request
+description: Suggest a new feature or customization option for Managerr
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature description
+      description: What problem does this solve, and how should it work?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or context
+      description: Any relevant settings, API behavior, or compatibility notes.

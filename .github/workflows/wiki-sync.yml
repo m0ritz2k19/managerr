@@ -1,0 +1,46 @@
+name: Sync GitHub Wiki
+
+on:
+  push:
+    branches: [main]
+    paths: ["wiki/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-wiki:
+    name: Push wiki/ to GitHub Wiki
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync wiki pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          AUTH_B64=$(printf 'x-access-token:%s' "${GH_TOKEN}" | base64 -w0)
+          WIKI_URL="https://github.com/${{ github.repository }}.wiki.git"
+          TMP_DIR=$(mktemp -d)
+          if ! git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${AUTH_B64}" clone "$WIKI_URL" "$TMP_DIR" 2>/dev/null; then
+            echo "GitHub Wiki repository is not initialized yet. Enable Wikis in Repository Settings and create the initial Home page in the GitHub UI, then re-run this workflow."
+            exit 0
+          fi
+
+          rm -f "$TMP_DIR"/*.md
+          cp wiki/*.md "$TMP_DIR"/
+
+          cd "$TMP_DIR"
+          git config user.name "m0ritz2k19"
+          git config user.email "m0ritz2k19@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Wiki is already up to date."
+            exit 0
+          fi
+
+          git commit -m "docs(wiki): sync wiki pages from main (${GITHUB_SHA::7})"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${AUTH_B64}" push origin HEAD

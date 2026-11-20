@@ -1,0 +1,3 @@
+{
+  "// generated": "Corpus cases the parser does not handle yet. Regenerate with MANAGERR_UPDATE_PARSER_GAPS=1 dotnet test --filter ParserCorpus. Shrink it, never grow it by hand."
+}

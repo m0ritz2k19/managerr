@@ -1,0 +1,424 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-arr-accent: var(--arr-accent);
+  --color-arr-accent-fg: var(--arr-accent-fg);
+  --color-arr-logo-secondary: var(--arr-logo-secondary);
+  --color-arr-primary: var(--arr-primary);
+  --color-arr-primary-hover: var(--arr-primary-hover);
+  --color-arr-primary-border: var(--arr-primary-border);
+  --color-arr-header: var(--arr-header-bg);
+  --color-arr-header-end: var(--arr-header-bg-end);
+  --color-arr-header-border: var(--arr-header-border);
+  --color-arr-sidebar: var(--arr-sidebar-bg);
+  --color-arr-sidebar-border: var(--arr-sidebar-border);
+  --color-arr-sidebar-active: var(--arr-sidebar-active-bg);
+  --color-arr-heading: var(--arr-heading-bg);
+  --color-arr-toolbar: var(--arr-toolbar-bg);
+  --color-arr-filterbar: var(--arr-filterbar-bg);
+  --color-arr-page: var(--arr-page-bg);
+  --color-arr-card: var(--arr-card-bg);
+  --color-arr-card-border: var(--arr-card-border);
+  --color-arr-modal: var(--arr-modal-bg);
+  --color-arr-input: var(--arr-input-bg);
+}
+
+:root {
+  /* MANDATORY: Color-scheme declaration and selector mappings */
+  color-scheme: light dark;
+
+  &:has(> head > meta[name="color-scheme"][content="dark"]) {
+    color-scheme: dark;
+  }
+  &:has(> head > meta[name="color-scheme"][content="light"]) {
+    color-scheme: light;
+  }
+
+  /* Raw Dark Theme Tokens - Scheme 1: Verdigris / Seafoam Jade defaults */
+  --arr-header-bg-dark: #0f332e;
+  --arr-header-bg-end-dark: #15443e;
+  --arr-header-border-dark: #246b62;
+  --arr-sidebar-bg-dark: #1b2222;
+  --arr-sidebar-border-dark: #101515;
+  --arr-sidebar-active-bg-dark: #243130;
+  --arr-heading-bg-dark: #1a2121;
+  --arr-toolbar-bg-dark: #1e2626;
+  --arr-toolbar-border-dark: #334242;
+  --arr-filterbar-bg-dark: #171e1e;
+  --arr-page-bg-dark: #141a1a;
+  --arr-card-bg-dark: #1f2828;
+  --arr-card-border-dark: #334242;
+  --arr-card-center-bg-dark: #1b2222;
+  --arr-modal-bg-dark: #1d2626;
+  --arr-input-bg-dark: #222c2c;
+  --arr-input-readonly-bg-dark: #161d1d;
+  --arr-border-dark: #334242;
+  --arr-divider-dark: #2a3535;
+  --arr-text-dark: #e1e2e3;
+  --arr-text-dim-dark: #cccccc;
+  --arr-muted-dark: #909293;
+  --arr-scrollbar-track-dark: #141a1a;
+  --arr-scrollbar-thumb-dark: #3a4b49;
+
+  /* Raw Light Theme Tokens */
+  --arr-page-bg-light: #f4f5f7;
+  --arr-header-bg-light: #0f332e;
+  --arr-header-bg-end-light: #15443e;
+  --arr-header-border-light: #246b62;
+  --arr-sidebar-bg-light: #ffffff;
+  --arr-sidebar-border-light: #e2e5e9;
+  --arr-sidebar-active-bg-light: #eef2f6;
+  --arr-heading-bg-light: #f8f9fa;
+  --arr-toolbar-bg-light: #f8f9fa;
+  --arr-toolbar-border-light: #e2e5e9;
+  --arr-filterbar-bg-light: #f1f3f5;
+  --arr-card-bg-light: #ffffff;
+  --arr-card-border-light: #d0d7de;
+  --arr-card-center-bg-light: #f8f9fa;
+  --arr-modal-bg-light: #ffffff;
+  --arr-input-bg-light: #ffffff;
+  --arr-input-readonly-bg-light: #e9ecef;
+  --arr-border-light: #d0d7de;
+  --arr-divider-light: #e1e4e8;
+  --arr-text-light: #1f2328;
+  --arr-text-dim-light: #424a53;
+  --arr-muted-light: #656d76;
+  --arr-scrollbar-track-light: #e9ecef;
+  --arr-scrollbar-thumb-light: #adb5bd;
+
+  /* Default assignments (dark fallback) - Keep top header tinted */
+  --arr-header-bg: var(--arr-header-bg-dark);
+  --arr-header-bg-end: var(--arr-header-bg-end-dark);
+  --arr-header-border: var(--arr-header-border-dark);
+  --arr-sidebar-bg: var(--arr-sidebar-bg-dark);
+  --arr-sidebar-border: var(--arr-sidebar-border-dark);
+  --arr-sidebar-active-bg: var(--arr-sidebar-active-bg-dark);
+  --arr-heading-bg: var(--arr-heading-bg-dark);
+  --arr-toolbar-bg: var(--arr-toolbar-bg-dark);
+  --arr-toolbar-border: var(--arr-toolbar-border-dark);
+  --arr-filterbar-bg: var(--arr-filterbar-bg-dark);
+  --arr-page-bg: var(--arr-page-bg-dark);
+  --arr-card-bg: var(--arr-card-bg-dark);
+  --arr-card-border: var(--arr-card-border-dark);
+  --arr-card-center-bg: var(--arr-card-center-bg-dark);
+  --arr-modal-bg: var(--arr-modal-bg-dark);
+  --arr-input-bg: var(--arr-input-bg-dark);
+  --arr-input-readonly-bg: var(--arr-input-readonly-bg-dark);
+  --arr-border: var(--arr-border-dark);
+  --arr-divider: var(--arr-divider-dark);
+  --arr-text: var(--arr-text-dark);
+  --arr-text-dim: var(--arr-text-dim-dark);
+  --arr-muted: var(--arr-muted-dark);
+  --arr-scrollbar-track: var(--arr-scrollbar-track-dark);
+  --arr-scrollbar-thumb: var(--arr-scrollbar-thumb-dark);
+
+  @media (prefers-color-scheme: light) {
+    --arr-page-bg: var(--arr-page-bg-light);
+    --arr-sidebar-bg: var(--arr-sidebar-bg-light);
+    --arr-sidebar-border: var(--arr-sidebar-border-light);
+    --arr-sidebar-active-bg: var(--arr-sidebar-active-bg-light);
+    --arr-heading-bg: var(--arr-heading-bg-light);
+    --arr-toolbar-bg: var(--arr-toolbar-bg-light);
+    --arr-toolbar-border: var(--arr-toolbar-border-light);
+    --arr-filterbar-bg: var(--arr-filterbar-bg-light);
+    --arr-card-bg: var(--arr-card-bg-light);
+    --arr-card-border: var(--arr-card-border-light);
+    --arr-card-center-bg: var(--arr-card-center-bg-light);
+    --arr-modal-bg: var(--arr-modal-bg-light);
+    --arr-input-bg: var(--arr-input-bg-light);
+    --arr-input-readonly-bg: var(--arr-input-readonly-bg-light);
+    --arr-border: var(--arr-border-light);
+    --arr-divider: var(--arr-divider-light);
+    --arr-text: var(--arr-text-light);
+    --arr-text-dim: var(--arr-text-dim-light);
+    --arr-muted: var(--arr-muted-light);
+    --arr-scrollbar-track: var(--arr-scrollbar-track-light);
+    --arr-scrollbar-thumb: var(--arr-scrollbar-thumb-light);
+  }
+
+  @supports (color: light-dark(white, black)) {
+    --arr-page-bg: light-dark(var(--arr-page-bg-light), var(--arr-page-bg-dark));
+    --arr-sidebar-bg: light-dark(var(--arr-sidebar-bg-light), var(--arr-sidebar-bg-dark));
+    --arr-sidebar-border: light-dark(var(--arr-sidebar-border-light), var(--arr-sidebar-border-dark));
+    --arr-sidebar-active-bg: light-dark(var(--arr-sidebar-active-bg-light), var(--arr-sidebar-active-bg-dark));
+    --arr-heading-bg: light-dark(var(--arr-heading-bg-light), var(--arr-heading-bg-dark));
+    --arr-toolbar-bg: light-dark(var(--arr-toolbar-bg-light), var(--arr-toolbar-bg-dark));
+    --arr-toolbar-border: light-dark(var(--arr-toolbar-border-light), var(--arr-toolbar-border-dark));
+    --arr-filterbar-bg: light-dark(var(--arr-filterbar-bg-light), var(--arr-filterbar-bg-dark));
+    --arr-card-bg: light-dark(var(--arr-card-bg-light), var(--arr-card-bg-dark));
+    --arr-card-border: light-dark(var(--arr-card-border-light), var(--arr-card-border-dark));
+    --arr-card-center-bg: light-dark(var(--arr-card-center-bg-light), var(--arr-card-center-bg-dark));
+    --arr-modal-bg: light-dark(var(--arr-modal-bg-light), var(--arr-modal-bg-dark));
+    --arr-input-bg: light-dark(var(--arr-input-bg-light), var(--arr-input-bg-dark));
+    --arr-input-readonly-bg: light-dark(var(--arr-input-readonly-bg-light), var(--arr-input-readonly-bg-dark));
+    --arr-border: light-dark(var(--arr-border-light), var(--arr-border-dark));
+    --arr-divider: light-dark(var(--arr-divider-light), var(--arr-divider-dark));
+    --arr-text: light-dark(var(--arr-text-light), var(--arr-text-dark));
+    --arr-text-dim: light-dark(var(--arr-text-dim-light), var(--arr-text-dim-dark));
+    --arr-muted: light-dark(var(--arr-muted-light), var(--arr-muted-dark));
+    --arr-scrollbar-track: light-dark(var(--arr-scrollbar-track-light), var(--arr-scrollbar-track-dark));
+    --arr-scrollbar-thumb: light-dark(var(--arr-scrollbar-thumb-light), var(--arr-scrollbar-thumb-dark));
+  }
+
+  --arr-accent: #2dd4bf;
+  --arr-accent-fg: #062420;
+  --arr-logo-secondary: #99f6e4;
+  --arr-primary: #0f766e;
+  --arr-primary-hover: #115e59;
+  --arr-primary-border: #14b8a6;
+  accent-color: var(--arr-accent);
+
+  /* Status Colors */
+  --arr-success: #27c24c;
+  --arr-torrent: #00853d;
+  --arr-usenet: #17b1d9;
+  --arr-warning: #ffa500;
+  --arr-gold: #ffc230;
+  --arr-plex: #e5a00d;
+  --arr-danger: #f05050;
+  --arr-purple: #7a43b6;
+}
+
+:root[data-theme-variant="oled"] {
+  --arr-page-bg-dark: #000000;
+  --arr-sidebar-bg-dark: #050505;
+  --arr-sidebar-border-dark: #141414;
+  --arr-sidebar-active-bg-dark: #111111;
+  --arr-heading-bg-dark: #070707;
+  --arr-toolbar-bg-dark: #090909;
+  --arr-toolbar-border-dark: #1a1a1a;
+  --arr-filterbar-bg-dark: #060606;
+  --arr-card-bg-dark: #0d0d0d;
+  --arr-card-border-dark: #222222;
+  --arr-card-center-bg-dark: #050505;
+  --arr-modal-bg-dark: #0a0a0a;
+  --arr-input-bg-dark: #111111;
+  --arr-input-readonly-bg-dark: #050505;
+  --arr-border-dark: #222222;
+  --arr-scrollbar-track-dark: #000000;
+  --arr-scrollbar-thumb-dark: #333333;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    background-color: var(--arr-page-bg);
+    color: var(--arr-text);
+    font-family: Roboto, "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.428571429;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: var(--arr-scrollbar-thumb) var(--arr-scrollbar-track);
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--arr-accent) 32%, transparent);
+    color: #ffffff;
+  }
+
+  @supports not (scrollbar-color: auto) {
+    *::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: var(--arr-scrollbar-track);
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: var(--arr-scrollbar-thumb);
+      border-radius: 2px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background-color: #757575;
+    }
+  }
+}
+
+@layer components {
+  /* Classic Servarr form controls */
+  .arr-input {
+    height: 34px;
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #eeeeee;
+    background-color: var(--arr-input-bg);
+    border: 1px solid var(--arr-card-border);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .arr-input::placeholder {
+    color: #808080;
+  }
+
+  .arr-input:focus {
+    outline: none;
+    border-color: var(--arr-accent);
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--arr-accent) 28%, transparent);
+  }
+
+  textarea.arr-input {
+    height: auto;
+    min-height: 76px;
+  }
+
+  /* Classic Servarr dense data tables */
+  .arr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    color: #cccccc;
+  }
+
+  .arr-table thead th {
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 13px;
+    color: #e1e2e3;
+    border-bottom: 1px solid var(--arr-card-border);
+    white-space: nowrap;
+  }
+
+  .arr-table tbody tr {
+    border-top: 1px solid var(--arr-card-border);
+    transition: background-color 0.08s ease-in-out;
+  }
+
+  .arr-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .arr-table tbody td {
+    padding: 8px 10px;
+    vertical-align: middle;
+  }
+
+  /* Classic Servarr Settings Card */
+  .arr-card {
+    background-color: var(--arr-card-bg);
+    border: 1px solid var(--arr-card-border);
+    border-radius: 4px;
+    box-shadow: 0 0 10px 1px #111111;
+    color: #cccccc;
+    transition: background-color 0.12s ease-in-out;
+  }
+
+  .arr-card-interactive {
+    cursor: pointer;
+  }
+
+  .arr-card-interactive:hover {
+    background-color: color-mix(in oklab, var(--arr-card-bg) 85%, white);
+  }
+}
+
+/* ReactFlow dark Servarr overrides */
+.react-flow__controls {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid var(--arr-card-border) !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  background: var(--arr-card-bg) !important;
+  color: #e1e2e3 !important;
+  border-bottom-color: var(--arr-card-border) !important;
+  fill: #e1e2e3 !important;
+}
+
+.react-flow__controls-button:hover {
+  background: color-mix(in oklab, var(--arr-card-bg) 85%, white) !important;
+}
+
+/* Visually hidden utility (accessible to screen readers; visible when focused) */
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+:where(a:any-link, button):focus-visible {
+  outline: 2px solid var(--arr-accent);
+  outline-offset: 2px;
+}
+
+@media (forced-colors: active) {
+  .arr-input:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.72);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+/* Container-responsive Cleanerr tables with sticky headers */
+.cleanerr-table-wrapper {
+  overflow: auto;
+  max-inline-size: 100%;
+  container-type: inline-size;
+}
+
+.cleanerr-table-wrapper thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background-color: var(--arr-card-bg);
+}
+
+@container (width < 680px) {
+  .cleanerr-responsive-table table,
+  .cleanerr-responsive-table thead,
+  .cleanerr-responsive-table tbody,
+  .cleanerr-responsive-table tr,
+  .cleanerr-responsive-table th,
+  .cleanerr-responsive-table td {
+    display: block;
+  }
+
+  .cleanerr-responsive-table thead {
+    display: none;
+  }
+
+  .cleanerr-responsive-table tbody tr {
+    margin-block-end: 0.75rem;
+    border: 1px solid var(--arr-card-border);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--arr-card-bg);
+  }
+
+  .cleanerr-responsive-table tbody td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-weight: 700;
+    color: var(--arr-muted);
+    margin-inline-end: 0.35rem;
+  }
+}

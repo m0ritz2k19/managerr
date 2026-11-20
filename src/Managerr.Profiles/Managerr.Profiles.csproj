@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Managerr.Common\Managerr.Common.csproj" />
+    <ProjectReference Include="..\Managerr.Datastore\Managerr.Datastore.csproj" />
+    <ProjectReference Include="..\Managerr.Security\Managerr.Security.csproj" />
+    <ProjectReference Include="..\Managerr.Downloaders\Managerr.Downloaders.csproj" />
+    <ProjectReference Include="..\Managerr.Catalog\Managerr.Catalog.csproj" />
+  </ItemGroup>
+</Project>

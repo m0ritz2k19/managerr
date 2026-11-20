@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Managerr.Common\Managerr.Common.csproj" />
+    <ProjectReference Include="..\Managerr.Datastore\Managerr.Datastore.csproj" />
+    <ProjectReference Include="..\Managerr.Security\Managerr.Security.csproj" />
+    <ProjectReference Include="..\Managerr.Indexers\Managerr.Indexers.csproj" />
+    <ProjectReference Include="..\Managerr.Downloaders\Managerr.Downloaders.csproj" />
+    <ProjectReference Include="..\Managerr.Metadata\Managerr.Metadata.csproj" />
+    <ProjectReference Include="..\Managerr.Catalog\Managerr.Catalog.csproj" />
+    <ProjectReference Include="..\Managerr.Profiles\Managerr.Profiles.csproj" />
+  </ItemGroup>
+</Project>

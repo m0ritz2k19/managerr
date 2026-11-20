@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.24.4" />
+    <PackageReference Include="SearchPioneer.Lingua" Version="2.0.0" />
+    <PackageReference Include="Whisper.net" Version="1.9.1" />
+    <PackageReference Include="Whisper.net.Runtime" Version="1.9.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Managerr.Common\Managerr.Common.csproj" />
+    <ProjectReference Include="..\Managerr.Datastore\Managerr.Datastore.csproj" />
+    <ProjectReference Include="..\Managerr.Downloaders\Managerr.Downloaders.csproj" />
+    <ProjectReference Include="..\Managerr.Catalog\Managerr.Catalog.csproj" />
+    <ProjectReference Include="..\Managerr.Profiles\Managerr.Profiles.csproj" />
+  </ItemGroup>
+</Project>

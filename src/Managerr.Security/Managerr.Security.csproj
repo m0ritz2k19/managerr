@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Managerr.Common\Managerr.Common.csproj" />
+    <ProjectReference Include="..\Managerr.Datastore\Managerr.Datastore.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Fido2" Version="4.3.3" />
+  </ItemGroup>
+</Project>

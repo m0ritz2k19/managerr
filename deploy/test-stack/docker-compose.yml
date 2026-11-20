@@ -1,0 +1,172 @@
+# Full Managerr Test Stack: Managerr + Seerr + SABnzbd + Plex
+#
+# Quick start:
+#   1. Copy .env.example to .env and adjust values (at minimum set MANAGERR_ADMIN_PASS):
+#        cp .env.example .env
+#   2. Create host directories owned by PUID:PGID (default 1000:1000):
+#        mkdir -p appdata/{managerr,sabnzbd,seerr,plex} data/downloads/{incomplete,complete} data/media/{movies,tv,anime,music,books}
+#   3. Launch the stack (the first start builds the Managerr image from this checkout):
+#        docker compose up -d --build
+#
+# Unified Storage Guarantee:
+#   Both Managerr, SABnzbd, and Plex mount ${DATA_DIR} at /data inside their containers.
+#   This ensures zero-copy atomic moves (atomic_move) and Unix hardlinks work instantaneously
+#   on the same filesystem without requiring remote path mappings.
+
+services:
+  managerr:
+    # Built from this checkout; set MANAGERR_IMAGE and start with --no-build to run a prebuilt image instead
+    image: ${MANAGERR_IMAGE:-managerr:local}
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    container_name: ${MANAGERR_CONTAINER_NAME:-managerr}
+    restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
+    ports:
+      - "${MANAGERR_BIND_IP:-127.0.0.1}:${MANAGERR_PORT:-8989}:8989"
+    environment:
+      TZ: ${TZ:-Europe/Berlin}
+      ASPNETCORE_URLS: "http://+:8989"
+      Managerr__ConfigDirectory: /config
+      # Optional local admin bootstrap for testing without requiring Plex OAuth claim first.
+      # For non-testbed deployments, you can instead disable MANAGERR_BOOTSTRAP_ENABLED and set
+      # Managerr__Auth__Local__BootstrapAdmin__Username / Managerr__Auth__Local__BootstrapAdmin__Password.
+      Managerr__TestbedBootstrap__Enabled: "${MANAGERR_BOOTSTRAP_ENABLED:-true}"
+      Managerr__TestbedBootstrap__Username: "${MANAGERR_ADMIN_USER:-admin}"
+      Managerr__TestbedBootstrap__Password: "${MANAGERR_ADMIN_PASS:?Set MANAGERR_ADMIN_PASS in .env}"
+      Managerr__TestbedBootstrap__PlexServerUrl: "http://plex:32400"
+      MANAGERR_PLEX_URL: "http://plex:32400"
+      # Allow Managerr SSRF guard to talk to sabnzbd and plex over the private Docker bridge network
+      SafeHttpEgress__AllowedPrivateCidrs__0: "192.168.0.0/16"
+      SafeHttpEgress__AllowedPrivateCidrs__1: "172.16.0.0/12"
+      SafeHttpEgress__AllowedPrivateCidrs__2: "10.0.0.0/8"
+    volumes:
+      - ${APPDATA_DIR:-./appdata}/managerr:/config
+      - ${DATA_DIR:-./data}:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - managerr-stack
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8989/api/v1/system/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: ${SABNZBD_CONTAINER_NAME:-sabnzbd}
+    restart: unless-stopped
+    ports:
+      - "${SABNZBD_BIND_IP:-127.0.0.1}:${SABNZBD_PORT:-8080}:8080"
+    environment:
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"
+      TZ: ${TZ:-Europe/Berlin}
+    volumes:
+      - ${APPDATA_DIR:-./appdata}/sabnzbd:/config
+      - ${DATA_DIR:-./data}:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - managerr-stack
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/api?mode=version"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: ${PLEX_CONTAINER_NAME:-plex}
+    restart: unless-stopped
+    ports:
+      - "${PLEX_BIND_IP:-127.0.0.1}:${PLEX_PORT:-32400}:32400"
+    environment:
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"
+      TZ: ${TZ:-Europe/Berlin}
+      VERSION: docker
+      PLEX_CLAIM: ${PLEX_CLAIM:-}
+    volumes:
+      - ${APPDATA_DIR:-./appdata}/plex:/config
+      - ${DATA_DIR:-./data}:/data
+    tmpfs:
+      - /transcode:size=2g,mode=1777
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - managerr-stack
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:32400/identity"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  seerr:
+    image: ghcr.io/seerr-team/seerr:v3.5.2
+    container_name: ${SEERR_CONTAINER_NAME:-seerr}
+    restart: unless-stopped
+    init: true
+    user: "${PUID:-1000}:${PGID:-1000}"
+    depends_on:
+      managerr:
+        condition: service_healthy
+    ports:
+      - "${SEERR_BIND_IP:-127.0.0.1}:${SEERR_PORT:-5055}:5055"
+    environment:
+      TZ: ${TZ:-Europe/Berlin}
+      LOG_LEVEL: info
+      PORT: "5055"
+    volumes:
+      - ${APPDATA_DIR:-./appdata}/seerr:/app/config
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - managerr-stack
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5055/api/v1/status"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  managerr-stack:
+    driver: bridge

@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Managerr.Common\Managerr.Common.csproj" />
+    <ProjectReference Include="..\Managerr.Datastore\Managerr.Datastore.csproj" />
+  </ItemGroup>
+</Project>

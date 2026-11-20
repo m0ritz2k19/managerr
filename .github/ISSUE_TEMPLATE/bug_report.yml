@@ -1,0 +1,36 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in Managerr
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue. Please avoid posting personal tokens, API keys, passwords, or private domain credentials.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Clear description of the bug and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Steps to trigger the behavior.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Managerr version / commit
+      placeholder: "v0.2.0 or image tag"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Container logs or browser console errors (redact tokens and URLs if private).
+      render: text

@@ -1,0 +1,15 @@
+[submodule "upstream/Sonarr"]
+	path = upstream/Sonarr
+	url = https://github.com/Sonarr/Sonarr.git
+[submodule "upstream/Radarr"]
+	path = upstream/Radarr
+	url = https://github.com/Radarr/Radarr.git
+[submodule "upstream/Lidarr"]
+	path = upstream/Lidarr
+	url = https://github.com/Lidarr/Lidarr.git
+[submodule "upstream/Readarr"]
+	path = upstream/Readarr
+	url = https://github.com/Readarr/Readarr.git
+[submodule "upstream/Prowlarr"]
+	path = upstream/Prowlarr
+	url = https://github.com/Prowlarr/Prowlarr.git

@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <Version>0.2.0</Version>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <AllowMissingPrunePackageData>true</AllowMissingPrunePackageData>
+    <RepositoryUrl>https://github.com/m0ritz2k19/managerr</RepositoryUrl>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+  </PropertyGroup>
+</Project>

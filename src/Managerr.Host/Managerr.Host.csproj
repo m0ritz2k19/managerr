@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\Managerr.Common\Managerr.Common.csproj" />
+    <ProjectReference Include="..\Managerr.Datastore\Managerr.Datastore.csproj" />
+    <ProjectReference Include="..\Managerr.Security\Managerr.Security.csproj" />
+    <ProjectReference Include="..\Managerr.Indexers\Managerr.Indexers.csproj" />
+    <ProjectReference Include="..\Managerr.Downloaders\Managerr.Downloaders.csproj" />
+    <ProjectReference Include="..\Managerr.Metadata\Managerr.Metadata.csproj" />
+    <ProjectReference Include="..\Managerr.Catalog\Managerr.Catalog.csproj" />
+    <ProjectReference Include="..\Managerr.Profiles\Managerr.Profiles.csproj" />
+    <ProjectReference Include="..\Managerr.Verification\Managerr.Verification.csproj" />
+    <ProjectReference Include="..\Managerr.Migration\Managerr.Migration.csproj" />
+    <ProjectReference Include="..\Managerr.Cleanerr\Managerr.Cleanerr.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.14" />
+    <PackageReference Include="Microsoft.OpenApi" Version="2.13.0" />
+  </ItemGroup>
+</Project>

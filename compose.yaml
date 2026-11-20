@@ -1,0 +1,72 @@
+# Managerr: run your own instance with Docker Compose.
+#
+#   cp .env.example .env      # then set DATA_DIR (and the rest if needed)
+#   docker compose up -d --build
+#
+# or let scripts/selfhost-setup.sh do both. Full guide: docs/SELF-HOSTING.md
+#
+# Everything is configured through .env; this file should not need edits. The image is built from this checkout,
+# so `git pull && docker compose up -d --build` updates it.
+services:
+  managerr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MANAGERR_IMAGE:-managerr:local}
+    pull_policy: build
+    container_name: ${CONTAINER_NAME:-managerr}
+    restart: unless-stopped
+    # Runs as this user, so files in CONFIG_DIR and DATA_DIR belong to you, not root
+    user: "${PUID:-1000}:${PGID:-1000}"
+    ports:
+      - "${MANAGERR_BIND_IP:-127.0.0.1}:${MANAGERR_PORT:-8989}:8989"
+    environment:
+      TZ: ${TZ:-Etc/UTC}
+      ASPNETCORE_URLS: "http://+:8989"
+      Managerr__ConfigDirectory: /config
+      SafeHttpEgress__AllowedPrivateCidrs__0: "192.168.0.0/16"
+      SafeHttpEgress__AllowedPrivateCidrs__1: "172.16.0.0/12"
+      SafeHttpEgress__AllowedPrivateCidrs__2: "10.0.0.0/8"
+      # --- Multi-Provider Authentication & Secrets (Optional) ---
+      # Any environment variable ending in _FILE reads its secret value from a file (e.g. Docker Secrets)
+      # Managerr__MasterKey_FILE: /run/secrets/managerr_master_key
+      #
+      # Headless bootstrap local admin (claims ownership if uninitialized):
+      # Managerr__Auth__Local__BootstrapAdmin__Username: "admin"
+      # Managerr__Auth__Local__BootstrapAdmin__Password: "..." # or Managerr__Auth__Local__BootstrapAdmin__Password_FILE: /run/secrets/bootstrap_pass
+      #
+      # OpenID Connect (OIDC 1.0 + PKCE):
+      # Managerr__Auth__Oidc__Enabled: "true"
+      # Managerr__Auth__Oidc__Issuer: "https://auth.example.com/application/o/managerr/"
+      # Managerr__Auth__Oidc__ClientId: "managerr"
+      # Managerr__Auth__Oidc__ClientSecret: "..." # or Managerr__Auth__Oidc__ClientSecret_FILE: /run/secrets/oidc_secret
+      # Managerr__Auth__Oidc__AdminGroups__0: "managerr-admins"
+      # Managerr__Auth__Oidc__ManagerGroups__0: "managerr-managers"
+      # Managerr__Auth__Oidc__RequesterGroups__0: "managerr-users"
+      #
+      # Passkeys / WebAuthn RP configuration (optional overrides):
+      # Managerr__Auth__Passkeys__RpId: "managerr.example.com"
+      # Managerr__Auth__Passkeys__RpName: "Managerr"
+    volumes:
+      # Databases, the master key that encrypts stored secrets, quarantine snippets. Back this up as a whole.
+      - ${CONFIG_DIR:-./appdata/config}:/config
+      # One root for downloads and media, so imports can move/hardlink instead of copying (same filesystem).
+      # Inside Managerr: libraries live under /data/media/..., the download client's folders under /data/downloads/...
+      - ${DATA_DIR:-./data}:/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8989/api/v1/system/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
