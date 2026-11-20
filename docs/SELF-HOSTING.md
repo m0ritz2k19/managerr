@@ -23,13 +23,13 @@ cd managerr
 
 The `upstream/` submodules are reference code only; you do not need them to run Managerr.
 
-Prebuilt container images are also published to GitHub Container Registry:
+Prebuilt multi-arch container images (`linux/amd64`, `linux/arm64`) are published to GitHub Container Registry:
 
 ```text
 ghcr.io/m0ritz2k19/managerr:latest
 ```
 
-To run the prebuilt GHCR image instead of building from source, set `MANAGERR_IMAGE=ghcr.io/m0ritz2k19/managerr:latest` in `.env` and start with `docker compose up -d`.
+`compose.yaml` pulls this GHCR image by default (`docker compose up -d`). If you prefer to build locally from source, use the build override file (`docker compose -f compose.yaml -f compose.build.yaml up -d --build`) or pass `--build` to `scripts/selfhost-setup.sh`.
 
 ## 2. Pick your folders
 
@@ -67,11 +67,11 @@ Prefer to do it by hand?
 
 ```bash
 cp .env.example .env    # set DATA_DIR, check PUID/PGID (owner of DATA_DIR: id -u / id -g)
-docker compose up -d --build
+docker compose up -d
 docker compose logs -f managerr
 ```
 
-Building from source takes a few minutes (it builds the .NET backend and the web UI). When ready, Managerr listens on `http://<host>:8989`, and `http://<host>:8989/api/v1/system/health` returns `{"status":"healthy",...}`.
+To build locally from source instead of pulling the prebuilt GHCR image, run `docker compose -f compose.yaml -f compose.build.yaml up -d --build` (the first source build takes a few minutes). When ready, Managerr listens on `http://<host>:8989`, and `http://<host>:8989/api/v1/system/health` returns `{"status":"healthy",...}`.
 
 ## 4. First sign-in and Authentication
 
@@ -188,18 +188,18 @@ Managerr can stand in for Sonarr and Radarr in Seerr:
 
 ## 10. Updating
 
-If building locally:
-
-```bash
-git pull
-docker compose up -d --build
-```
-
-If using the prebuilt GHCR image (`ghcr.io/m0ritz2k19/managerr:latest`):
+Using the prebuilt GHCR image (`ghcr.io/m0ritz2k19/managerr:latest`, default):
 
 ```bash
 docker compose pull
 docker compose up -d
+```
+
+If building locally from source:
+
+```bash
+git pull
+docker compose -f compose.yaml -f compose.build.yaml up -d --build
 ```
 
 Database migrations run automatically on start.

@@ -15,8 +15,8 @@ scripts/selfhost-setup.sh --data-dir /srv/data
 
 The setup script writes `.env`, creates `/config` and `/data` directories, and starts Managerr on port `8989`.
 
-* **Build from source:** `docker compose up -d --build` (all state is stored in embedded SQLite `WAL` + `FTS5` databases in `/config`, with no external database containers).
-* **Use a prebuilt GHCR image:** Pull `ghcr.io/m0ritz2k19/managerr:latest` (set `MANAGERR_IMAGE=ghcr.io/m0ritz2k19/managerr:latest` in `.env` and run `docker compose up -d`).
+* **Use the prebuilt GHCR image (default):** `docker compose up -d` pulls the multi-arch `ghcr.io/m0ritz2k19/managerr:latest` image (all state is stored in embedded SQLite `WAL` + `FTS5` databases in `/config`, with no external database containers).
+* **Build locally from source:** `docker compose -f compose.yaml -f compose.build.yaml up -d --build` (or pass `--build` to `scripts/selfhost-setup.sh`).
 * **Self-hosting guide:** See [`docs/SELF-HOSTING.md`](./docs/SELF-HOSTING.md) for directory layout, authentication setup, reverse proxy configuration, remote path mappings, Cleanerr/Discord setup, updates, and backups.
 * **4-service test stack (`Managerr` + `Seerr` + `SABnzbd` + `Plex`):** See [`deploy/test-stack/README.md`](./deploy/test-stack/README.md).
 

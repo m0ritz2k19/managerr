@@ -10,6 +10,10 @@ permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: docker-publish-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
 jobs:
   docker:
     name: Build & Push to GHCR
@@ -18,9 +22,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set lowercase image name
+      - name: Resolve image metadata inputs
         id: image
-        run: echo "name=$(echo 'ghcr.io/${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION=$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props | head -n1 | tr -d '[:space:]')
+          echo "name=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION:-0.2.0}" >> "$GITHUB_OUTPUT"
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -55,6 +62,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: GIT_SHA=${{ github.sha }}
+          build-args: |
+            GIT_SHA=${{ github.sha }}
+            VERSION=${{ steps.image.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

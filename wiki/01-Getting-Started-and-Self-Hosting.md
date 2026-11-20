@@ -40,7 +40,7 @@ scripts/selfhost-setup.sh --data-dir /srv/data
 2. **Directory & Permission Setup:** Creates the root data directory (`/srv/data`) and standard subdirectories (`downloads/` and `media/{movies,tv,anime,music,books,comics}`).
 3. **PUID/PGID Detection:** Automatically detects the user ID and group ID of the owner of `DATA_DIR` (`stat -c %u` and `stat -c %g`) and writes them into `.env` so container file operations avoid permission conflicts.
 4. **Time Zone Alignment:** Auto-detects the host system time zone (`timedatectl show -p Timezone`) and sets `TZ` accordingly.
-5. **Config & Image Initialization:** Creates the `./appdata/config` folder, writes `.env`, pulls or builds the container image, and waits for `http://127.0.0.1:8989/api/v1/system/health` to report `{"status":"healthy"}`.
+5. **Config & Image Initialization:** Creates the `./appdata/config` folder, writes `.env`, pulls the prebuilt GHCR container image (or builds locally if `--build` is passed), and waits for `http://127.0.0.1:8989/api/v1/system/health` to report `{"status":"healthy"}`.
 
 ### CLI Flags Reference:
 ```bash
@@ -49,7 +49,8 @@ scripts/selfhost-setup.sh [OPTIONS]
 Options:
   --data-dir PATH    Path to the shared data folder on the host (e.g. /srv/data).
   --port PORT        Host port to bind Managerr (default: 8989).
-  --no-start         Write .env and create directories without building or starting the container.
+  --build            Build locally from source via compose.build.yaml instead of pulling GHCR.
+  --no-start         Write .env and create directories without pulling, building, or starting the container.
   -h, --help         Show help message.
 ```
 
@@ -101,15 +102,12 @@ When configured this way:
 
 ## 4. Docker Compose Deployment (`compose.yaml`)
 
-For manual deployment via Docker Compose, use `compose.yaml` in the root repository. You can either build locally from source or pull the prebuilt multi-arch image `ghcr.io/m0ritz2k19/managerr:latest`.
+For manual deployment via Docker Compose, use `compose.yaml` in the root repository (which pulls the prebuilt multi-arch `ghcr.io/m0ritz2k19/managerr:latest` image by default), or add `compose.build.yaml` to build locally from source.
 
 ### `compose.yaml`
 ```yaml
 services:
   managerr:
-    build:
-      context: .
-      dockerfile: Dockerfile
     image: ${MANAGERR_IMAGE:-ghcr.io/m0ritz2k19/managerr:latest}
     container_name: ${CONTAINER_NAME:-managerr}
     restart: unless-stopped
@@ -159,8 +157,8 @@ cp .env.example .env
 ```
 
 ```ini
-# Prebuilt container image (or set managerr:local when building from source)
-MANAGERR_IMAGE=ghcr.io/m0ritz2k19/managerr:latest
+# Prebuilt multi-arch GHCR container image (default when unset in .env)
+# MANAGERR_IMAGE=ghcr.io/m0ritz2k19/managerr:latest
 
 # Required: host root folder containing downloads and media
 DATA_DIR=/srv/data
@@ -183,11 +181,11 @@ CONTAINER_NAME=managerr
 
 Launch the container:
 ```bash
-# Using prebuilt GHCR image:
+# Using prebuilt GHCR image (default):
 docker compose pull && docker compose up -d
 
 # Or building locally from source:
-docker compose up -d --build
+docker compose -f compose.yaml -f compose.build.yaml up -d --build
 docker compose logs -f managerr
 ```
 
@@ -368,7 +366,7 @@ Or when building locally from git source:
 
 ```bash
 git pull
-docker compose up -d --build
+docker compose -f compose.yaml -f compose.build.yaml up -d --build
 ```
 
 ### Automatic Schema Migrations

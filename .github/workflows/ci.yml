@@ -39,13 +39,21 @@ jobs:
       - name: Install native media and OCR dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg tesseract-ocr tesseract-ocr-eng tesseract-ocr-deu mkvtoolnix
+          sudo apt-get install -y --no-install-recommends ffmpeg mkvtoolnix mediainfo tesseract-ocr tesseract-ocr-eng tesseract-ocr-deu libgomp1
+
+      - name: Cache verification models
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/managerr-models-cache
+          key: verification-models-v1
 
       - name: Build solution
         run: dotnet build Managerr.sln -c Release -warnaserror -p:AllowMissingPrunePackageData=true
 
       - name: Run full test suite
-        run: dotnet test Managerr.sln -c Release --no-build -p:AllowMissingPrunePackageData=true --logger "trx;LogFilePrefix=results" --results-directory TestResults
+        env:
+          MANAGERR_MODELS_DIR: ${{ runner.temp }}/managerr-models-cache
+        run: dotnet test Managerr.sln -c Release --no-build --maxcpucount:1 -p:AllowMissingPrunePackageData=true --logger trx --results-directory TestResults
 
       - name: Upload test results
         if: always()

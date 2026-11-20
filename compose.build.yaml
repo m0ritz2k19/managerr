@@ -1,0 +1,9 @@
+# Override to build Managerr locally from source instead of pulling from GHCR:
+#   docker compose -f compose.yaml -f compose.build.yaml up -d --build
+services:
+  managerr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MANAGERR_IMAGE:-managerr:local}
+    pull_policy: build

@@ -1,19 +1,13 @@
-# Managerr: run your own instance with Docker Compose.
+# Managerr: run your own instance with Docker Compose using the prebuilt GHCR image.
 #
 #   cp .env.example .env      # then set DATA_DIR (and the rest if needed)
-#   docker compose up -d --build
+#   docker compose up -d
 #
-# or let scripts/selfhost-setup.sh do both. Full guide: docs/SELF-HOSTING.md
-#
-# Everything is configured through .env; this file should not need edits. The image is built from this checkout,
-# so `git pull && docker compose up -d --build` updates it.
+# or let scripts/selfhost-setup.sh do both (pass --build to build locally via compose.build.yaml).
+# Full guide: docs/SELF-HOSTING.md
 services:
   managerr:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: ${MANAGERR_IMAGE:-managerr:local}
-    pull_policy: build
+    image: ${MANAGERR_IMAGE:-ghcr.io/m0ritz2k19/managerr:latest}
     container_name: ${CONTAINER_NAME:-managerr}
     restart: unless-stopped
     # Runs as this user, so files in CONFIG_DIR and DATA_DIR belong to you, not root

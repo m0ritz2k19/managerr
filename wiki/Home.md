@@ -124,7 +124,7 @@ cd managerr
 scripts/selfhost-setup.sh --data-dir /srv/data
 ```
 
-The script detects your host user ID (`PUID`) and group ID (`PGID`), creates the directory structure under `/srv/data`, writes `.env`, pulls or builds the container image (prebuilt images are published at `ghcr.io/m0ritz2k19/managerr:latest`), and launches Managerr on port `8989`.
+The script detects your host user ID (`PUID`) and group ID (`PGID`), creates the directory structure under `/srv/data`, writes `.env`, pulls the multi-arch container image from `ghcr.io/m0ritz2k19/managerr:latest` (or builds from source when passed `--build`), and launches Managerr on port `8989`.
 
 Once started, open `http://<host-ip>:8989` in your browser. Complete the initial setup wizard by claiming the instance via **Sign in with Plex** or by creating an initial local administrative user.
 
